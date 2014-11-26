@@ -1,0 +1,40 @@
+.container {
+    padding-top: 10px;
+    margin-left: 50px;
+    width: 700px;
+}
+
+.form-horizontal {
+    width: 100%;
+}
+
+input[type="text"], input[type="password"] {
+    height: 25px;
+}
+
+.navbar .nav > li > a {
+    color: #000000;
+}
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+td.input[type="text"], td.input[type="password"]{
+    width: 100px;
+    vertical-align: middle;
+}
+
+.login-div{
+    background-color: whitesmoke;
+    display: block;
+    border: .25px solid;
+    border-color: gainsboro;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+    width: 400px;
+    height: 220px;
+}
+
+.error{
+    color: red;
+}
