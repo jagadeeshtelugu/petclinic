@@ -19,14 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.OwnerImage;
 import org.springframework.samples.petclinic.model.OwnerLW;
+import org.springframework.samples.petclinic.model.UploadImage;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.web.util.UploadUtil;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -133,7 +135,7 @@ public class OwnerController {
         }
         if (results.size() > 1) {
             // multiple owners found
-            model.put("selections", results);
+        	model.put("selections", results);
             return "owners/ownersList";
         } else {
             // 1 owner found
@@ -159,7 +161,7 @@ public class OwnerController {
         if (result.hasErrors()) {
             return "owners/createOrUpdateOwnerForm";
         } else {
-            this.clinicService.saveOwner(owner);
+            
 
             if (owner.getImage() != null && owner.getImage().getBytes() != null
                     && owner.getImage().getBytes().length != 0) {
@@ -170,7 +172,9 @@ public class OwnerController {
                 OwnerImage oimage = new OwnerImage();
                 oimage.setImageName(imageName);
                 oimage.setOwner(owner);
-                this.clinicService.saveOwnerImage(oimage);
+                owner.getOwnerImage().add(oimage);
+                
+                this.clinicService.saveOwner(owner);
 
             }
 
