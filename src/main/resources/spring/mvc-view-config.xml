@@ -33,13 +33,9 @@
         </property>
     </bean>
     
-    <bean id="multipartResolver"
-                    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-
-        <!-- setting maximum upload size -->
-        <property name="maxUploadSize" value="100000" />
-
-    </bean>
+<bean
+class="org.springframework.web.multipart.support.StandardServletMultipartResolver"
+id="multipartResolver"/>
 
     <!-- Simple strategy: only path extension is taken into account -->
     <bean id="cnManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
