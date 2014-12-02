@@ -25,17 +25,14 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
-import org.springframework.samples.petclinic.web.validator.multipart.Multipart;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -182,18 +179,5 @@ public class Owner extends Person {
         }
         return null;
     }
-
-//    @Override
-//    public String toString() {
-//        return new ToStringCreator(this)
-//
-//                .append("id", this.getId())
-//                .append("new", this.isNew())
-//                .append("lastName", this.getLastName())
-//                .append("firstName", this.getFirstName())
-//                .append("address", this.address)
-//                .append("city", this.city)
-//                .append("telephone", this.telephone)
-//                .toString();
-//    }
+    
 }
