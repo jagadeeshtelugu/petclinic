@@ -18,7 +18,7 @@
             <jsp:include page="../fragments/bodyHeader.jsp"/>
             <c:choose>
                 <c:when test="${owner['new']}"><c:set var="method" value="post"/></c:when>
-                <c:otherwise><c:set var="method" value="put"/></c:otherwise>
+                <c:otherwise><c:set var="method" value="post"/></c:otherwise>
             </c:choose>
 
             <c:set var="ownerImagesList" value="${owner['ownerImage']}" />
