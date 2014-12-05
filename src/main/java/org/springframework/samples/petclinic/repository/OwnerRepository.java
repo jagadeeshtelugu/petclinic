@@ -31,6 +31,7 @@
 package org.springframework.samples.petclinic.repository;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.BaseEntity;
@@ -82,7 +83,20 @@ public interface OwnerRepository {
      */
     void save(Owner owner) throws DataAccessException;
 
+    /**
+     * 
+     * @param oimage
+     */
     public void saveImage(OwnerImage oimage);
+    
+    /**
+     * 
+     * @param firstName
+     * @param lastName
+     * @return
+     */
+    public List<Owner> findByCriteriaQuery(Owner owner);
+    
 
 
 }
