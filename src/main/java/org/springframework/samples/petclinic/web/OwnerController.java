@@ -21,12 +21,14 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.OwnerImage;
 import org.springframework.samples.petclinic.model.OwnerLW;
+import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.UploadImage;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.web.util.UploadUtil;
@@ -53,149 +55,207 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes(types = Owner.class)
 public class OwnerController {
 
-    private final ClinicService clinicService;
-    private final UploadUtil uploadUtil;
+	private final ClinicService clinicService;
+	private final UploadUtil uploadUtil;
 
-    @Autowired
-    public OwnerController(ClinicService clinicService, UploadUtil uploadUtil) {
-        this.clinicService = clinicService;
-        this.uploadUtil = uploadUtil;
-    }
+	@Autowired
+	public OwnerController(ClinicService clinicService, UploadUtil uploadUtil) {
+		this.clinicService = clinicService;
+		this.uploadUtil = uploadUtil;
+	}
 
-    @InitBinder
-    public void setAllowedFields(WebDataBinder dataBinder) {
-        dataBinder.setDisallowedFields("id");
-    }
+	@InitBinder
+	public void setAllowedFields(WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
+	}
 
-    @RequestMapping(value = "/owners/new", method = RequestMethod.GET)
-    public String initCreationForm(Map<String, Object> model) {
-        Owner owner = new Owner();
-        model.put("owner", owner);
-        return "owners/createOrUpdateOwnerForm";
-    }
+	@RequestMapping(value = "/owners/new", method = RequestMethod.GET)
+	public String initCreationForm(Map<String, Object> model) {
+		Owner owner = new Owner();
+		model.put("owner", owner);
+		return "owners/createOrUpdateOwnerForm";
+	}
 
-    @RequestMapping(value = "/owners/new", method = RequestMethod.POST)
-    public String processCreationForm(@Valid Owner owner, BindingResult result,
-            SessionStatus status, HttpServletRequest request) throws IOException {
+	@RequestMapping(value = "/owners/new", method = RequestMethod.POST)
+	public String processCreationForm(@Valid Owner owner, BindingResult result,
+			SessionStatus status, HttpServletRequest request)
+			throws IOException {
 
-        String imgRoot = request.getSession().getServletContext().getRealPath("");
-        imgRoot = imgRoot + File.separator + "resources" + File.separator + "ownerImages" + File.separator;
-        System.out.println("root-------" + imgRoot);
+		String imgRoot = request.getSession().getServletContext()
+				.getRealPath("");
+		imgRoot = imgRoot + File.separator + "resources" + File.separator
+				+ "ownerImages" + File.separator;
+		System.out.println("root-------" + imgRoot);
 
-        String imageName = null;
+		String imageName = null;
 
-        if (result.hasErrors()) {
-            return "owners/createOrUpdateOwnerForm";
-        } else {
-//            this.clinicService.saveOwner(owner);
+		if (result.hasErrors()) {
+			return "owners/createOrUpdateOwnerForm";
+		} else {
+			// this.clinicService.saveOwner(owner);
 
-            if (owner.getImage() != null && owner.getImage().getBytes() != null
-                    && owner.getImage().getBytes().length != 0) {
-                this.uploadUtil.uploadImage(owner.getImage().getBytes(), imgRoot + owner.getImage().getOriginalFilename());
-                imageName = owner.getImage().getOriginalFilename();
-            } else {
-                imageName = "default.png";
-            }
+			if (owner.getImage() != null && owner.getImage().getBytes() != null
+					&& owner.getImage().getBytes().length != 0) {
+				this.uploadUtil.uploadImage(owner.getImage().getBytes(),
+						imgRoot + owner.getImage().getOriginalFilename());
+				imageName = owner.getImage().getOriginalFilename();
+			} else {
+				imageName = "default.png";
+			}
 
-            OwnerImage oimage = new OwnerImage();
-            oimage.setImageName(imageName);
-            oimage.setOwner(owner);
-            
-//            this.clinicService.saveOwnerImage(oimage);
-            
-            // add image another way.
-            owner.addOwnerImage(oimage);
-            this.clinicService.saveOwner(owner);
+			OwnerImage oimage = new OwnerImage();
+			oimage.setImageName(imageName);
+			oimage.setOwner(owner);
 
-            status.setComplete();
-            return "redirect:/owners/" + owner.getId();
-        }
-    }
+			// this.clinicService.saveOwnerImage(oimage);
 
-    @RequestMapping(value = "/owners/find", method = RequestMethod.GET)
-    public String initFindForm(Map<String, Object> model) {
-        model.put("owner", new Owner());
-        return "owners/findOwners";
-    }
+			// add image another way.
+			owner.addOwnerImage(oimage);
+			this.clinicService.saveOwner(owner);
 
-    @RequestMapping(value = "/owners", method = RequestMethod.GET)
-    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
+			status.setComplete();
+			return "redirect:/owners/" + owner.getId();
+		}
+	}
 
-        // allow parameterless GET request for /owners to return all records
-        if (owner.getLastName() == null) {
-            owner.setLastName(""); // empty string signifies broadest possible search
-        }
+	@RequestMapping(value = "/owners/find", method = RequestMethod.GET)
+	public String initFindForm(Map<String, Object> model) {
+		Owner owner = new Owner();
+		owner.addPet(new Pet());
+		model.put("owner", owner);
+		return "owners/findOwners";
+	}
 
-        // find owners by last name
-        Collection<Owner> results = this.clinicService.findOwnerAll();
-        if (results.size() < 1) {
-            // no owners found
-            result.rejectValue("lastName", "notFound", "not found");
-            return "owners/findOwners";
-        }
-        if (results.size() > 1) {
-            // multiple owners found
-        	model.put("selections", results);
-            return "owners/ownersList";
-        } else {
-            // 1 owner found
-            owner = results.iterator().next();
-            return "redirect:/owners/" + owner.getId();
-        }
-    }
+	@RequestMapping(value = "/owners", method = RequestMethod.GET)
+	public String processFindForm(Owner owner, BindingResult result,
+			Map<String, Object> model) {
 
-    @RequestMapping(value = "/owners/{ownerId}/edit", method = RequestMethod.GET)
-    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-        Owner owner = this.clinicService.findOwnerById(ownerId);
-        model.addAttribute(owner);
-        return "owners/createOrUpdateOwnerForm";
-    }
+		// allow parameterless GET request for /owners to return all records
+		if (owner.getLastName() == null) {
+			owner.setLastName(""); // empty string signifies broadest possible
+									// search
+		}
 
-    @RequestMapping(value = "/owners/{ownerId}/edit", method = RequestMethod.POST)
-    public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, SessionStatus status,
-            HttpServletRequest request) throws IOException {
+		// find owners by last name
+		Collection<Owner> results = this.clinicService.findOwnerAll();
+		if (results.size() < 1) {
+			// no owners found
+			result.rejectValue("lastName", "notFound", "not found");
+			return "owners/findOwners";
+		}
+		if (results.size() > 1) {
+			// multiple owners found
+			model.put("selections", results);
+			return "owners/ownersList";
+		} else {
+			// 1 owner found
+			owner = results.iterator().next();
+			return "redirect:/owners/" + owner.getId();
+		}
+	}
 
-        String imgRoot = request.getSession().getServletContext().getRealPath("");
-        imgRoot = imgRoot + File.separator + "resources" + File.separator + "ownerImages" + File.separator;
+	@RequestMapping(value = "/owners/ownersByCriteria", method = RequestMethod.GET)
+	public String processFindFormBycriteria(Owner owner, BindingResult result,
+			Map<String, Object> model) {
 
-        if (result.hasErrors()) {
-            return "owners/createOrUpdateOwnerForm";
-        } else {
-            
+		model.put("selections", this.clinicService.findByCriteriaQuery(owner));
 
-            if (owner.getImage() != null && owner.getImage().getBytes() != null
-                    && owner.getImage().getBytes().length != 0) {
+		return "owners/ownersList";
+	}
 
-                this.uploadUtil.uploadImage(owner.getImage().getBytes(), imgRoot + owner.getImage().getOriginalFilename());
-                String imageName = owner.getImage().getOriginalFilename();
+	@RequestMapping(value = "/owners/{ownerId}/edit", method = RequestMethod.GET)
+	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId,
+			Model model) {
+		Owner owner = this.clinicService.findOwnerById(ownerId);
+		model.addAttribute(owner);
+		return "owners/createOrUpdateOwnerForm";
+	}
 
-                OwnerImage oimage = new OwnerImage();
-                oimage.setImageName(imageName);
-                oimage.setOwner(owner);
-                owner.getOwnerImage().add(oimage);
-                
-                this.clinicService.saveOwner(owner);
+	@RequestMapping(value = "/owners/{ownerId}/edit", method = RequestMethod.POST)
+	public String processUpdateOwnerForm(@Valid Owner owner,
+			BindingResult result, SessionStatus status,
+			HttpServletRequest request) throws IOException {
 
-            }
+		String imgRoot = request.getSession().getServletContext()
+				.getRealPath("");
+		imgRoot = imgRoot + File.separator + "resources" + File.separator
+				+ "ownerImages" + File.separator;
 
-            status.setComplete();
-            return "redirect:/owners/{ownerId}";
-        }
-    }
+		if (result.hasErrors()) {
+			return "owners/createOrUpdateOwnerForm";
+		} else {
 
-    /**
-     * Custom handler for displaying an owner.
-     *
-     * @param ownerId the ID of the owner to display
-     * @return a ModelMap with the model attributes for the view
-     */
-    @RequestMapping("/owners/{ownerId}")
-    public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
-        ModelAndView mav = new ModelAndView("owners/ownerDetails");
-        Owner owner = this.clinicService.findOwnerById(ownerId);
-        System.out.println("image sizeeeeeeeee--------" + owner.getOwnerImage().size());
-        mav.addObject(owner);
-        return mav;
-    }
+			if (owner.getImage() != null && owner.getImage().getBytes() != null
+					&& owner.getImage().getBytes().length != 0) {
+
+				this.uploadUtil.uploadImage(owner.getImage().getBytes(),
+						imgRoot + owner.getImage().getOriginalFilename());
+				String imageName = owner.getImage().getOriginalFilename();
+
+				OwnerImage oimage = new OwnerImage();
+				oimage.setImageName(imageName);
+				oimage.setOwner(owner);
+				owner.getOwnerImage().add(oimage);
+			}
+
+			this.clinicService.saveOwner(owner);
+			status.setComplete();
+			return "redirect:/owners/{ownerId}";
+		}
+	}
+
+	/**
+	 * Custom handler for displaying an owner.
+	 *
+	 * @param ownerId
+	 *            the ID of the owner to display
+	 * @return a ModelMap with the model attributes for the view
+	 */
+	@RequestMapping("/owners/{ownerId}")
+	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
+		ModelAndView mav = new ModelAndView("owners/ownerDetails");
+		Owner owner = this.clinicService.findOwnerById(ownerId);
+		System.out.println("image sizeeeeeeeee--------"
+				+ owner.getOwnerImage().size());
+		mav.addObject(owner);
+		return mav;
+	}
+
+	/**
+	 * Remove filter
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	@RequestMapping("/owners/removeFilter/{filter}")
+	public String removeFilter(@PathVariable("filter") String filter,
+			HttpSession session) {
+		
+		Owner owner = (Owner) session.getAttribute("owner");
+		Pet pet = owner.getPets().get(0);
+
+		// First name.
+		if ("firstName".equals(filter)) {
+			owner.setFirstName("");
+		}
+		
+		// Last name
+		if ("lastName".equals(filter)) {
+			owner.setLastName("");
+		}
+		
+		// Pet name
+		if ("petName".equals(filter)) {
+			pet.setName("");
+		}
+		
+		// Birth date
+		if ("birthDate".equals(filter)) {
+			pet.setFromBirthDate(null);
+			pet.setToBirthDate(null);
+		}
+
+		return "redirect:/owners/ownersByCriteria";
+	}
 
 }

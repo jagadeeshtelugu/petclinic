@@ -27,7 +27,7 @@ public class ImageUploader {
 	@Autowired
 	private UploadUtil uploadUtil;
 
-	@RequestMapping(value = "/owners/processUploadImage", method = RequestMethod.POST)
+	@RequestMapping(value = "/processUploadImage", method = RequestMethod.POST)
 	public String uploadImage(UploadImage uploadImage,
 			@RequestParam("file") Part file, HttpServletRequest request) throws IOException {
 

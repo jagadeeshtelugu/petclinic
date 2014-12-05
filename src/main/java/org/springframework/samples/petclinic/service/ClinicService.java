@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Login;
@@ -28,7 +29,6 @@ import org.springframework.samples.petclinic.model.Users;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 
-
 /**
  * Mostly used as a facade for all Petclinic controllers
  *
@@ -36,34 +36,37 @@ import org.springframework.samples.petclinic.model.Visit;
  */
 public interface ClinicService {
 
-    Collection<PetType> findPetTypes() throws DataAccessException;
+	Collection<PetType> findPetTypes() throws DataAccessException;
 
-    Owner findOwnerById(int id) throws DataAccessException;
+	Owner findOwnerById(int id) throws DataAccessException;
 
-    Pet findPetById(int id) throws DataAccessException;
-    
-    Visit findVisitById(int id) throws DataAccessException;
+	Pet findPetById(int id) throws DataAccessException;
 
-    void savePet(Pet pet) throws DataAccessException;
+	Visit findVisitById(int id) throws DataAccessException;
 
-    void saveVisit(Visit visit) throws DataAccessException;
+	void savePet(Pet pet) throws DataAccessException;
 
-    Collection<Vet> findVets() throws DataAccessException;
+	void saveVisit(Visit visit) throws DataAccessException;
 
-    void saveOwner(Owner owner) throws DataAccessException;
+	Collection<Vet> findVets() throws DataAccessException;
 
-    Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException;
-    
-//     Collection<OwnerLW> findOwnerAll() throws DataAccessException;
-    
-    Collection<Owner> findOwnerAll() throws DataAccessException;
+	void saveOwner(Owner owner) throws DataAccessException;
 
-    public Users findUser(Login login);
+	Collection<Owner> findOwnerByLastName(String lastName)
+			throws DataAccessException;
 
-    public Users findUserByUsername(String userName);
+	// Collection<OwnerLW> findOwnerAll() throws DataAccessException;
 
-    public void saveUser(Users user);
+	Collection<Owner> findOwnerAll() throws DataAccessException;
 
-    public void saveOwnerImage(OwnerImage oimage);
+	public Users findUser(Login login);
+
+	public Users findUserByUsername(String userName);
+
+	public void saveUser(Users user);
+
+	public void saveOwnerImage(OwnerImage oimage);
+
+	public List<Owner> findByCriteriaQuery(Owner owner);
 
 }

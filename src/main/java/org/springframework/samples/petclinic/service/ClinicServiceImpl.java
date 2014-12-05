@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -151,5 +152,11 @@ public class ClinicServiceImpl implements ClinicService {
     public void saveOwnerImage(OwnerImage oimage) {
         ownerRepository.saveImage(oimage);
     }
+
+	@Override
+	public List<Owner> findByCriteriaQuery(Owner owner) {
+		
+		return ownerRepository.findByCriteriaQuery(owner);
+	}
 
 }
