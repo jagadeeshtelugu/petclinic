@@ -67,6 +67,17 @@ public class Pet extends NamedEntity {
 
     @Transient
     int age;
+    
+    @Transient
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    private DateTime fromBirthDate;
+    
+    @Transient
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    private DateTime toBirthDate;
+    
 
     public void setBirthDate(DateTime birthDate) {
         this.birthDate = birthDate;
@@ -121,4 +132,21 @@ public class Pet extends NamedEntity {
     public void setAge(int age) {
         this.age = age;
     }
+
+	public DateTime getFromBirthDate() {
+		return fromBirthDate;
+	}
+
+	public void setFromBirthDate(DateTime fromBirthDate) {
+		this.fromBirthDate = fromBirthDate;
+	}
+
+	public DateTime getToBirthDate() {
+		return toBirthDate;
+	}
+
+	public void setToBirthDate(DateTime toBirthDate) {
+		this.toBirthDate = toBirthDate;
+	}
+    
 }
