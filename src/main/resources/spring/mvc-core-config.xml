@@ -36,6 +36,10 @@
     <!-- serve static resources (*.html, ...) from src/main/webapp/ -->
     <mvc:default-servlet-handler/>
 
+
+
+
+
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="formatters">
             <set>
@@ -43,6 +47,18 @@
             </set>
         </property>
     </bean>
+
+<!-- Below conversion service working but due to this date formatter(joda time) failed -->
+ <!--
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean" >
+	    <property name="converters">
+	        <set>
+	            <bean class="org.springframework.samples.petclinic.web.PetTypeConverter"/>
+	        </set>
+	    </property>
+	</bean>
+-->
+	
 
     <!--
         - Message source for this context, loaded from localized "messages_xx" files.

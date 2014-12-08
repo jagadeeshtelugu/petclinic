@@ -57,7 +57,7 @@ public class ImageUploader {
 
 		}
 		
-		return "redirect:/owners";
+		return "redirect:/owners/ownersByCriteria";
 	}
 	
 	private String getFileName(Part part) {

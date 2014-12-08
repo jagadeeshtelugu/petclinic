@@ -23,7 +23,7 @@
             <c:set var="method" value="post"/>
         </c:when>
         <c:otherwise>
-            <c:set var="method" value="put"/>
+            <c:set var="method" value="post"/>
         </c:otherwise>
     </c:choose>
 
