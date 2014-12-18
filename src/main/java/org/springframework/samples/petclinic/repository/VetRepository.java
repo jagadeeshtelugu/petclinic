@@ -38,5 +38,30 @@ public interface VetRepository {
      */
     Collection<Vet> findAll() throws DataAccessException;
 
+    /**
+     * 
+     * @param vet
+     */
+	void saveVet(Vet vet);
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	Vet findByID(int id);
+
+	/**
+	 * 
+	 * @param vet
+	 */
+	void deleteVet(int id);
+
+	/**
+	 * 
+	 * @param id
+	 */
+	void deleteVetSpecialtyReln(int id);
+
 
 }

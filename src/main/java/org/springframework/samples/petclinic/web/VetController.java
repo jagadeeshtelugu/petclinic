@@ -15,13 +15,30 @@
  */
 package org.springframework.samples.petclinic.web;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Vets;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.support.SessionStatus;
 
 /**
  * @author Juergen Hoeller
@@ -32,23 +49,82 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class VetController {
 
-    private final ClinicService clinicService;
+	private final ClinicService clinicService;
 
+	@Autowired
+	public VetController(ClinicService clinicService) {
+		this.clinicService = clinicService;
+	}
+	
+	@ModelAttribute(value="specialities")
+	public List<Specialty> getSpeciality(){
+		return this.clinicService.findSpecialities();
+	}
 
-    @Autowired
-    public VetController(ClinicService clinicService) {
-        this.clinicService = clinicService;
+	@RequestMapping("/vets")
+	public String showVetList(Map<String, Object> model) {
+		// Here we are returning an object of type 'Vets' rather than a
+		// collection of Vet objects
+		// so it is simpler for Object-Xml mapping
+		Vets vets = new Vets();
+		
+		Collection<Vet> listVets = new ArrayList<Vet>();
+		listVets = this.clinicService.findVets();
+		
+		vets.getVetList().addAll(listVets);
+		model.put("vets", vets);
+		return "vets/vetList";
+	}
+
+	@RequestMapping(value = "/vets/new", method = RequestMethod.GET)
+	public String vetForm(Map<String, Object> model) {
+		Vet vet = new Vet();
+		model.put("vet", vet);
+
+		return "vets/createOrUpdateVetForm";
+	}
+	
+	@RequestMapping(value = "/vets/new", method = RequestMethod.POST)
+	public String vetSave(@Valid Vet vet, BindingResult result, SessionStatus status) {
+		
+		if(result.hasErrors()){
+			return "vets/createOrUpdateVetForm";
+		}
+		clinicService.saveVet(vet);
+		status.setComplete();
+		return "redirect:/vets.html";
+	}
+	
+    @RequestMapping(value = "/vet/{id}/delete", method = {RequestMethod.GET})
+    public String deleteVet(@PathVariable("id") int id, SessionStatus status) {
+    	
+    	clinicService.deleteVetSpecialtyReln(id);
+
+    	clinicService.deleteVet(id);
+    	
+    	status.setComplete();
+    	
+    	return "redirect:/vets.html";
     }
-
-    @RequestMapping("/vets")
-    public String showVetList(Map<String, Object> model) {
-        // Here we are returning an object of type 'Vets' rather than a collection of Vet objects 
-        // so it is simpler for Object-Xml mapping
-        Vets vets = new Vets();
-        vets.getVetList().addAll(this.clinicService.findVets());
-        model.put("vets", vets);
-        return "vets/vetList";
+    
+    @RequestMapping(value = "/vet/{id}/edit", method = {RequestMethod.GET})
+    public String editVetForm(@PathVariable("id") int id, Map<String, Object> model) {
+    	
+    	Vet vet = clinicService.findVetByID(id);
+    	model.put("vet", vet);
+    	
+    	return "vets/createOrUpdateVetForm";
     }
-
+    
+	@RequestMapping(value = "/vet/{id}/edit", method = RequestMethod.POST)
+	public String editVet(@Valid Vet vet, BindingResult result, SessionStatus status) {
+		
+		if(result.hasErrors()){
+			return "vets/createOrUpdateVetForm";
+		}
+		clinicService.saveVet(vet);
+		status.setComplete();
+		return "redirect:/vets.html";
+	}
 
 }

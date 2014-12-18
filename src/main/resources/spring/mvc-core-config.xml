@@ -44,6 +44,7 @@
         <property name="formatters">
             <set>
                 <bean class="org.springframework.samples.petclinic.web.PetTypeFormatter"/>
+                <bean class="org.springframework.samples.petclinic.web.VetSpecialityFormatter" />
             </set>
         </property>
     </bean>

@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,11 +28,13 @@ import org.springframework.samples.petclinic.model.OwnerImage;
 import org.springframework.samples.petclinic.model.OwnerLW;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Users;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.samples.petclinic.repository.PetRepository;
+import org.springframework.samples.petclinic.repository.SpecialitiesRepository;
 import org.springframework.samples.petclinic.repository.UsersRepository;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.samples.petclinic.repository.VisitRepository;
@@ -53,16 +56,18 @@ public class ClinicServiceImpl implements ClinicService {
     private OwnerRepository ownerRepository;
     private VisitRepository visitRepository;
     private UsersRepository userRepository;
+    private SpecialitiesRepository specialitiesRepository;
 
     @Autowired
     public ClinicServiceImpl(PetRepository petRepository, VetRepository vetRepository,
             OwnerRepository ownerRepository, VisitRepository visitRepository,
-            UsersRepository userRepository) {
+            UsersRepository userRepository, SpecialitiesRepository specialitiesRepository) {
         this.petRepository = petRepository;
         this.vetRepository = vetRepository;
         this.ownerRepository = ownerRepository;
         this.visitRepository = visitRepository;
         this.userRepository = userRepository;
+        this.specialitiesRepository = specialitiesRepository;
 
     }
 
@@ -124,7 +129,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "vets")
+    //@Cacheable(value = "vets")
     public Collection<Vet> findVets() throws DataAccessException {
         return vetRepository.findAll();
     }
@@ -154,9 +159,48 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
 	@Override
+	@Transactional
 	public List<Owner> findByCriteriaQuery(Owner owner) {
 		
 		return ownerRepository.findByCriteriaQuery(owner);
+	}
+
+	@Override
+	@Transactional
+	public List<Specialty> findSpecialities() {
+		return specialitiesRepository.findAllSpecialities();
+	}
+
+	@Override
+	@Transactional
+	public Set<Specialty> findSpecialityById(String specialityID) {
+		return specialitiesRepository.findAllSpecialityById(specialityID);
+	}
+
+	@Override
+	@Transactional
+	public void saveVet(Vet vet) {
+		vetRepository.saveVet(vet);
+	}
+
+	@Override
+	@Transactional
+	public Vet findVetByID(int id) {
+		
+		return vetRepository.findByID(id);
+	}
+
+	@Override
+	@Transactional
+	public void deleteVet(int id) {
+		
+		vetRepository.deleteVet(id);
+	}
+
+	@Override
+	@Transactional
+	public void deleteVetSpecialtyReln(int id) {
+		vetRepository.deleteVetSpecialtyReln(id);
 	}
 
 }

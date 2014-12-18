@@ -15,7 +15,15 @@
  */
 package org.springframework.samples.petclinic.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 /**
@@ -26,5 +34,26 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "specialties")
 public class Specialty extends NamedEntity {
+	
+    @ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.EAGER)
+    @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "specialty_id"),
+            inverseJoinColumns = @JoinColumn(name = "vet_id"))
+    private Set<Vet> vet;
+
+    /**
+     * 
+     * @return
+     */
+	public Set<Vet> getVet() {
+		return vet;
+	}
+
+	/**
+	 * 
+	 * @param vet
+	 */
+	public void setVet(Set<Vet> vet) {
+		this.vet = vet;
+	}
 
 }

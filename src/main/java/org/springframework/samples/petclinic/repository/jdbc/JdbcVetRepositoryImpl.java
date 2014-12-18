@@ -90,4 +90,28 @@ public class JdbcVetRepositoryImpl implements VetRepository {
         }
         return vets;
     }
+
+	@Override
+	public void saveVet(Vet vet) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Vet findByID(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteVet(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteVetSpecialtyReln(int id) {
+		// TODO Auto-generated method stub
+		
+	}
 }

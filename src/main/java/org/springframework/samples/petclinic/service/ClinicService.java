@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Login;
@@ -25,6 +26,7 @@ import org.springframework.samples.petclinic.model.OwnerImage;
 import org.springframework.samples.petclinic.model.OwnerLW;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Users;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
@@ -68,5 +70,17 @@ public interface ClinicService {
 	public void saveOwnerImage(OwnerImage oimage);
 
 	public List<Owner> findByCriteriaQuery(Owner owner);
+
+	public List<Specialty> findSpecialities();
+
+	public Set<Specialty> findSpecialityById(String specialityID);
+
+	public void saveVet(Vet vet);
+
+	public Vet findVetByID(int id);
+
+	public void deleteVet(int id);
+
+	public void deleteVetSpecialtyReln(int id);
 
 }

@@ -19,8 +19,8 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.stereotype.Repository;
@@ -42,10 +42,50 @@ public class JpaVetRepositoryImpl implements VetRepository {
 
 
     @Override
-    @Cacheable(value = "vets")
     @SuppressWarnings("unchecked")
     public Collection<Vet> findAll() {
         return this.em.createQuery("SELECT distinct vet FROM Vet vet left join fetch vet.specialties ORDER BY vet.lastName, vet.firstName").getResultList();
     }
 
+
+	@Override
+	public void saveVet(Vet vet) {		
+		
+		if(vet.isNew()){
+			this.em.persist(vet);
+		}else{
+			this.em.merge(vet);
+		}
+	}
+
+
+	@Override
+	public Vet findByID(int id) {
+//		 Query query = this.em.createQuery("SELECT distinct vet FROM Vet vet where vet.id = :id");
+//		 query.setParameter("id", id);
+//		 return (Vet)query.getSingleResult();
+		return (Vet)this.em.find(Vet.class, id);
+	
+	}
+
+
+	@Override
+	public void deleteVetSpecialtyReln(int id) {
+		
+		Vet vet1 = findByID(id);
+		vet1.setSpecialties(null);
+		
+		// Remove child
+		this.em.merge(vet1);
+		
+	}
+
+
+	@Override
+	public void deleteVet(int id) {
+		
+		Vet vet = em.find(Vet.class, id);
+		this.em.remove(vet);
+		
+	}
 }

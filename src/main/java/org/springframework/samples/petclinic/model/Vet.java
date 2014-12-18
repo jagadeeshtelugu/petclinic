@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -44,7 +45,7 @@ import org.springframework.beans.support.PropertyComparator;
 @Table(name = "vets")
 public class Vet extends Person {
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.MERGE, CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"),
             inverseJoinColumns = @JoinColumn(name = "specialty_id"))
     private Set<Specialty> specialties;
@@ -54,25 +55,33 @@ public class Vet extends Person {
         this.specialties = specialties;
     }
 
-    protected Set<Specialty> getSpecialtiesInternal() {
+    public void setSpecialties(Set<Specialty> specialties) {
+		this.specialties = specialties;
+	}
+
+	protected Set<Specialty> getSpecialtiesInternal() {
         if (this.specialties == null) {
             this.specialties = new HashSet<Specialty>();
         }
         return this.specialties;
     }
 
-    @XmlElement
-    public List<Specialty> getSpecialties() {
-        List<Specialty> sortedSpecs = new ArrayList<Specialty>(getSpecialtiesInternal());
-        PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
-        return Collections.unmodifiableList(sortedSpecs);
-    }
+//    @XmlElement
+//    public List<Specialty> getSpecialties() {
+//        List<Specialty> sortedSpecs = new ArrayList<Specialty>(getSpecialtiesInternal());
+//        PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
+//        return Collections.unmodifiableList(sortedSpecs);
+//    }
 
     public int getNrOfSpecialties() {
         return getSpecialtiesInternal().size();
     }
 
-    public void addSpecialty(Specialty specialty) {
+    public Set<Specialty> getSpecialties() {
+		return specialties;
+	}
+
+	public void addSpecialty(Specialty specialty) {
         getSpecialtiesInternal().add(specialty);
     }
 

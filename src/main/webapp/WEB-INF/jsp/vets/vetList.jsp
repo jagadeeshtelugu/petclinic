@@ -11,6 +11,10 @@
 <jsp:include page="../fragments/headTag.jsp"/>
 
 <body>
+
+<spring:url value="/resources/images/delete.png" var="delete" />
+<spring:url value="/resources/images/edit.png" var="edit" />
+
 <div class="container">
     <jsp:include page="../fragments/bodyHeader.jsp"/>
 
@@ -18,6 +22,14 @@
 
     <datatables:table id="vets" data="${vets.vetList}" cdn="true" row="vet" theme="bootstrap2" cssClass="table table-striped" paginate="false" info="false">
         <datatables:column title="Name">
+        
+        	<spring:url value="/vet/${vet.id}/delete" var="deleteVet" />
+        	<a href="${deleteVet}"><img alt="delete" src="${delete}" /></a>
+        	
+        	<spring:url value="/vet/${vet.id}/edit" var="editVet" />
+        	<a href="${editVet}"><img alt="edit" src="${edit}" /></a>
+        	&nbsp;&nbsp;
+        	
             <c:out value="${vet.firstName} ${vet.lastName}"></c:out>
         </datatables:column>
         <datatables:column title="Specialties">
@@ -27,6 +39,9 @@
             <c:if test="${vet.nrOfSpecialties == 0}">none</c:if>
         </datatables:column>
     </datatables:table>
+    
+    	<br /> 
+	<a href='<spring:url value="/vets/new" htmlEscape="true"/>'>Add	Vet</a>
     
     <table class="table-buttons">
         <tr>
@@ -39,7 +54,7 @@
         </tr>
     </table>
 
-    <jsp:include page="../fragments/footer.jsp"/>
+		<jsp:include page="../fragments/footer.jsp"/>
 </div>
 </body>
 
