@@ -66,7 +66,7 @@ public class Pet extends NamedEntity {
     private Set<Visit> visits;
 
     @Transient
-    int age;
+    int age; 
     
     @Transient
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
