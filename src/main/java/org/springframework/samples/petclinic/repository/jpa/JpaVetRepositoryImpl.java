@@ -16,11 +16,13 @@
 package org.springframework.samples.petclinic.repository.jpa;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.stereotype.Repository;
@@ -54,23 +56,26 @@ public class JpaVetRepositoryImpl implements VetRepository {
 		if(vet.isNew()){
 			this.em.persist(vet);
 		}else{
-			this.em.merge(vet);
+			
+			Vet vet1 = em.find(Vet.class, vet.getId());
+			vet1.setFirstName(vet.getFirstName());
+			vet1.setLastName(vet.getLastName());
+			vet1.setSpecialties(vet.getSpecialties());
+			
+//			this.em.merge(vet);
 		}
 	}
 
 
 	@Override
 	public Vet findByID(int id) {
-//		 Query query = this.em.createQuery("SELECT distinct vet FROM Vet vet where vet.id = :id");
-//		 query.setParameter("id", id);
-//		 return (Vet)query.getSingleResult();
 		return (Vet)this.em.find(Vet.class, id);
 	
 	}
 
 
 	@Override
-	public void deleteVetSpecialtyReln(int id) {
+	public void deleteVetAllSpecialty(int id) {
 		
 		Vet vet1 = findByID(id);
 		vet1.setSpecialties(null);
@@ -87,5 +92,11 @@ public class JpaVetRepositoryImpl implements VetRepository {
 		Vet vet = em.find(Vet.class, id);
 		this.em.remove(vet);
 		
+	}
+
+
+	@Override
+	public void deleteVetSpecialtyById(int vetId, int specialtyId) {	
+		// NOt used.
 	}
 }

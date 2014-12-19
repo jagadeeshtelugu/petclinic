@@ -13,6 +13,7 @@
 <body>
 
 <spring:url value="/resources/images/delete.png" var="delete" />
+<spring:url value="/resources/images/delete-small.png" var="delete_small" />
 <spring:url value="/resources/images/edit.png" var="edit" />
 
 <div class="container">
@@ -32,12 +33,20 @@
         	
             <c:out value="${vet.firstName} ${vet.lastName}"></c:out>
         </datatables:column>
+        
         <datatables:column title="Specialties">
             <c:forEach var="specialty" items="${vet.specialties}">
+            
+            	<!-- Add delete functionality -->
+            	<spring:url value="/vet/specialty/${vet.id}/${specialty.id}/delete" var="deleteSpecialty" />
+            	<a href="${deleteSpecialty}"><img src="${delete_small}" alt="delete_specialty" /></a>
+            
                 <c:out value="${specialty.name}"/>
+     
             </c:forEach>
             <c:if test="${vet.nrOfSpecialties == 0}">none</c:if>
         </datatables:column>
+        
     </datatables:table>
     
     	<br /> 

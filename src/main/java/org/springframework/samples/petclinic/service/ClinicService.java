@@ -81,6 +81,10 @@ public interface ClinicService {
 
 	public void deleteVet(int id);
 
-	public void deleteVetSpecialtyReln(int id);
+	public void deleteVetAllSpecialty(int id);
+
+	public void deleteVetSpecialtyById(int vetId, int specialtyId);
+
+	public List<Specialty> findAllSpecialtyDetails();
 
 }

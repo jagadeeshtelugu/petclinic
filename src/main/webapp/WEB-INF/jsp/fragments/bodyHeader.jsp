@@ -40,6 +40,11 @@
                 <a href="<spring:url value="${veterinarians}"  />"><i
                         class="icon-th-list"></i> Veterinarians</a>
             </li>
+            
+             <li style="width: 140px;">
+                <a href="<spring:url value="/specialty/findAll"  />"><i
+                        class="icon-th-list"></i> Specialty</a>
+            </li>
 
             <li style="width: 90px;">
                 <a href="<spring:url value="/oups.html" htmlEscape="true" />"

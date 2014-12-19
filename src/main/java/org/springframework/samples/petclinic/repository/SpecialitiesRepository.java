@@ -12,4 +12,7 @@ public interface SpecialitiesRepository {
 
 	Set<Specialty> findAllSpecialityById(String specialityID);
 
+	List<Specialty> findAllSpecialtyDetails();
+
+
 }

@@ -32,7 +32,6 @@ public class JpaSpecialitiesRepositoryImpl implements SpecialitiesRepository {
 	@Override
 	public Set<Specialty> findAllSpecialityById(String specialityID) {
 		String[] idS = specialityID.split(",");
-		int i = 0;
 		List<Integer> idList = new ArrayList<Integer>();
 		
 		for (String id : idS){
@@ -48,6 +47,12 @@ public class JpaSpecialitiesRepositoryImpl implements SpecialitiesRepository {
 			ex.printStackTrace();
 		}
 		return  new HashSet<Specialty>(query.getResultList());
+	}
+
+	@Override
+	public List<Specialty> findAllSpecialtyDetails() {
+		Query query = em.createQuery("SELECT specialty FROM Specialty specialty");
+		return query.getResultList();
 	}
 
 }

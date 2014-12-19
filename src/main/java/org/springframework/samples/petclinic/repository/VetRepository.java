@@ -61,7 +61,14 @@ public interface VetRepository {
 	 * 
 	 * @param id
 	 */
-	void deleteVetSpecialtyReln(int id);
+	void deleteVetAllSpecialty(int id);
+
+	/**
+	 * 
+	 * @param vetId
+	 * @param specialtyId
+	 */
+	void deleteVetSpecialtyById(int vetId, int specialtyId);
 
 
 }

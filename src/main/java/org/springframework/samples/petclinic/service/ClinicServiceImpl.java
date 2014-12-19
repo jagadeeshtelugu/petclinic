@@ -166,13 +166,13 @@ public class ClinicServiceImpl implements ClinicService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Specialty> findSpecialities() {
 		return specialitiesRepository.findAllSpecialities();
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public Set<Specialty> findSpecialityById(String specialityID) {
 		return specialitiesRepository.findAllSpecialityById(specialityID);
 	}
@@ -184,7 +184,7 @@ public class ClinicServiceImpl implements ClinicService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public Vet findVetByID(int id) {
 		
 		return vetRepository.findByID(id);
@@ -199,8 +199,22 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public void deleteVetSpecialtyReln(int id) {
-		vetRepository.deleteVetSpecialtyReln(id);
+	public void deleteVetAllSpecialty(int id) {
+		vetRepository.deleteVetAllSpecialty(id);
 	}
+
+	@Override
+	@Transactional
+	public void deleteVetSpecialtyById(int vetId, int specialtyId) {
+		vetRepository.deleteVetSpecialtyById(vetId, specialtyId);
+		
+	}
+
+	@Override
+	public List<Specialty> findAllSpecialtyDetails() {
+		
+		return specialitiesRepository.findAllSpecialtyDetails();
+	}
+
 
 }

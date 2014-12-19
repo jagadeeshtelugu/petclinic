@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -98,7 +99,7 @@ public class VetController {
     @RequestMapping(value = "/vet/{id}/delete", method = {RequestMethod.GET})
     public String deleteVet(@PathVariable("id") int id, SessionStatus status) {
     	
-    	clinicService.deleteVetSpecialtyReln(id);
+    	clinicService.deleteVetAllSpecialty(id);
 
     	clinicService.deleteVet(id);
     	
@@ -126,5 +127,26 @@ public class VetController {
 		status.setComplete();
 		return "redirect:/vets.html";
 	}
+	
+    @RequestMapping(value = "/vet/specialty/{vetId}/{specialtyId}/delete", method = {RequestMethod.GET})
+    public String deleteVetSpecialtyByID(@PathVariable("vetId") int vetId,
+    		@PathVariable("specialtyId") int specialtyId, SessionStatus status) {
+    	
+    	Vet vet = clinicService.findVetByID(vetId);
+    	Set<Specialty> specialties = vet.getSpecialties();
+    	
+    	for(Specialty specialty : specialties){
+    		if(specialtyId == specialty.getId()){
+    			specialties.remove(specialty);
+    		}
+    	}
+    	
+    	vet.setSpecialties(specialties);
+    	clinicService.saveVet(vet);
+    	
+    	status.setComplete();
+    	
+    	return "redirect:/vets.html";
+    }
 
 }
