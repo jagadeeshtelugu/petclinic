@@ -70,7 +70,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping(value = "/owners/new", method = RequestMethod.GET)
-	public String initCreationForm(Map<String, Object> model) {
+	public String initCreationForm(Map<String, Object> model) {		
 		Owner owner = new Owner();
 		model.put("owner", owner);
 		return "owners/createOrUpdateOwnerForm";
@@ -80,6 +80,7 @@ public class OwnerController {
 	public String processCreationForm(@Valid Owner owner, BindingResult result,
 			SessionStatus status, HttpServletRequest request)
 			throws IOException {
+	
 
 		String imgRoot = request.getSession().getServletContext()
 				.getRealPath("");
@@ -137,7 +138,7 @@ public class OwnerController {
 		}
 
 		// find owners by last name
-		Collection<Owner> results = this.clinicService.findOwnerAll();
+		Collection<Owner> results = this.clinicService.findOwnerByLastName(owner.getLastName());
 		if (results.size() < 1) {
 			// no owners found
 			result.rejectValue("lastName", "notFound", "not found");
@@ -175,6 +176,8 @@ public class OwnerController {
 	public String processUpdateOwnerForm(@Valid Owner owner,
 			BindingResult result, SessionStatus status,
 			HttpServletRequest request) throws IOException {
+		
+		System.out.println("------------"+owner.getId());
 
 		String imgRoot = request.getSession().getServletContext()
 				.getRealPath("");
